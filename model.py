@@ -49,7 +49,6 @@ class UTransformer(tf.keras.Model):
             for i in range(self.hp.out_seqlen):
                 dec_out = self.decoder(decoder_inputs, enc_output, skip_layers, seq_len=i+1, training=False)
                 decoder_inputs = tf.concat((decoder_inp_start, dec_out), 1)
-                print("decoder:", decoder_inputs.shape)
 
             dec_output = decoder_inputs[:, 1:, :, :, :]
 

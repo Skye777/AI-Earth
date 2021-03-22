@@ -48,7 +48,19 @@ import matplotlib.pyplot as plt
 #     nino     (year, month) float64 ...
 
 meta_data = 'D:\Python\AI-Earth\meta_data'
-final_data = 'D:\Python\AI-Earth\\final_data'
+final_data = '/home/dl/Public/Skye/AI-Earth/final_data'
+
+
+def nino_seq():
+    data = os.path.join(meta_data, 'SODA_train.nc')
+    ssta = xarray.open_dataset(data, cache=True, decode_times=True)['sst']
+    print(ssta.shape)
+    nino = []
+    for sample in range(len(ssta)):
+        n_index = [np.mean(ssta[sample, i,  10:13, 38:49]) for i in range(len(ssta[sample]))]
+        print(np.array(n_index).shape)
+        nino.append(n_index)
+    print(np.array(nino).shape)
 
 
 def nino34_index():
@@ -97,7 +109,7 @@ def visualize():
 
 
 def npz_data():
-    cmip_sst = np.load(f"{final_data}\{'soda_sst'}.npz")['sst']
+    cmip_sst = np.load(f"{final_data}/{'cmip_sst'}.npz")['sst'][:15000]
     # vwind = np.load(f"{dir_path}/{'vwind-resolve'}.npz")['vwind']
     # sst = np.load(f"{dir_path}/{'sst-resolve'}.npz")['sst']
     # sshg = np.load(f"{dir_path}/{'sshg'}.npz")['sshg']
@@ -110,3 +122,4 @@ if __name__ == "__main__":
     # visualize()
     # nino34_index()
     npz_data()
+    # nino_seq()

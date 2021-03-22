@@ -51,15 +51,15 @@ def parse_fn(example):
 
 def train_input_fn():
 
-    train_filenames = [hp.preprocess_out_dir + "/train.tfrecords"]
+    train_filenames = [hp.preprocess_out_dir + "/cmip_train.tfrecords"]
     train_dataset = tf.data.TFRecordDataset(train_filenames)
     train_dataset = train_dataset.map(parse_fn)
     train_dataset = train_dataset.shuffle(hp.random_seed).batch(hp.batch_size)
 
-    test_filenames = [hp.preprocess_out_dir + "/test.tfrecords"]
+    test_filenames = [hp.preprocess_out_dir + "/cmip_test.tfrecords"]
     test_dataset = tf.data.TFRecordDataset(test_filenames)
     test_dataset = test_dataset.map(parse_fn)
-    test_dataset = test_dataset.batch(hp.batch_size)
+    test_dataset = test_dataset.batch(hp.eval_batch_size)
 
     return train_dataset, test_dataset
 

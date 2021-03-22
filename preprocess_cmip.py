@@ -35,10 +35,10 @@ def parse_npz_and_nc_data():
     height = hp.height
     width = hp.width
 
-    sst = np.load(f"{hp.npz_dir}/soda_sst.npz")['sst']
-    t300 = np.load(f"{hp.npz_dir}/soda_t300.npz")['t300']
-    ua = np.load(f"{hp.npz_dir}/soda_ua.npz")['ua']
-    va = np.load(f"{hp.npz_dir}/soda_va.npz")['va']
+    sst = np.nan_to_num(np.load(f"{hp.npz_dir}/cmip_sst.npz")['sst'][:15000])
+    t300 = np.nan_to_num(np.load(f"{hp.npz_dir}/cmip_t300.npz")['t300'][:15000])
+    ua = np.nan_to_num(np.load(f"{hp.npz_dir}/cmip_ua.npz")['ua'][:15000])
+    va = np.nan_to_num(np.load(f"{hp.npz_dir}/cmip_va.npz")['va'][:15000])
 
     # sst[abs(sst) < 8e-17] = 0
 
@@ -57,7 +57,7 @@ def parse_npz_and_nc_data():
                      't300': t300[i:i + hp.in_seqlen].astype(np.float32),
                      'ua': ua[i:i + hp.in_seqlen].astype(np.float32),
                      'va': va[i:i + hp.in_seqlen].astype(np.float32)})
-        
+
         target_start = i + hp.in_seqlen - 1 + hp.lead_time
         target.append({'sst': sst[target_start:target_start + hp.out_seqlen].astype(np.float32),
                        't300': t300[target_start:target_start + hp.out_seqlen].astype(np.float32),
@@ -103,7 +103,7 @@ if __name__ == "__main__":
     print("Parsing raw data...")
     train_data, test_data, train_target, test_target = parse_npz_and_nc_data()
     print("Writing TF Records to file...")
-    write_records((train_data, train_target), "soda_train.tfrecords")
-    write_records((test_data, test_target), "soda_test.tfrecords")
+    write_records((train_data, train_target), "cmip_train.tfrecords")
+    write_records((test_data, test_target), "cmip_test.tfrecords")
 
     print("Done!")

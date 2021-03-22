@@ -45,8 +45,6 @@ class Decoder(tf.keras.layers.Layer):
 
     def call(self, x, enc_output, skip_layers, seq_len, training):
         x, _ = self.embedding(x)
-        if training is False:
-            print(x.shape)
 
         x += auxiliary_encode(x, T=seq_len)
         x = self.dropout(x, training=training)
