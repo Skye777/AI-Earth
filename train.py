@@ -17,6 +17,7 @@ from input import *
 from model import UTransformer
 from loss import Loss
 from metric import score, nino_seq
+from model_factory import model_factory
 
 from hparams import Hparams
 
@@ -28,7 +29,7 @@ hp = parser.parse_args()
 def main():
     train_dataset, test_dataset = train_input_fn()
     optimizer = tf.keras.optimizers.Adam(learning_rate=hp.lr)
-    model = UTransformer(hp)
+    model = model_factory(hp)
     model_loss = Loss(model)
 
     best_score = float('-inf')
@@ -46,7 +47,7 @@ def main():
         for step, (x_batch_train, ys_batch_train) in enumerate(train_dataset):
             start = time.clock()
             with tf.GradientTape() as tape:
-                y_predict = model(x_batch_train, ys_batch_train, training=True)
+                y_predict = model([x_batch_train, ys_batch_train], training=True)
                 loss_ssim, loss_l2, loss_l1, loss = model_loss((y_predict, ys_batch_train[1]))
             grads = tape.gradient(loss, model.trainable_weights)
             optimizer.apply_gradients(zip(grads, model.trainable_weights))
@@ -67,7 +68,7 @@ def main():
             y_true, y_pred = [], []
             spinner = MoonSpinner('Testing ')
             for step, (x_batch_test, ys_batch_test) in enumerate(test_dataset):
-                y_predict = model(x_batch_test, ys_batch_test, training=False)
+                y_predict = model([x_batch_test, ys_batch_test], training=False)
                 loss_ssim, loss_l2, loss_l1, loss = model_loss((y_predict, ys_batch_test[1]))
                 loss_ssim_test += loss_ssim.numpy()
                 loss_l2_test += loss_l2.numpy()

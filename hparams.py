@@ -5,9 +5,9 @@ class Hparams:
     parser = argparse.ArgumentParser()
     # test
     parser.add_argument('--path_list', default=['./tcdata/enso_round1_test_20210201/',
-                                                r'D:\data\enso\test样例_20210207_update\test样例'])
+                                                r'D:\python\AI-Earth\test样例_20210207_update\test样例'])
     parser.add_argument('--delivery_model_dir', default='delivery')
-    parser.add_argument('--delivery_model_file', default='delivery')
+    parser.add_argument('--delivery_model_file', default='ckp_18.h5')
 
     # prepro
     parser.add_argument('--npz_dir', default='/home/dl/Public/Skye/AI-Earth/final_data')

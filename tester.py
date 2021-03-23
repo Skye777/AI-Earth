@@ -7,8 +7,10 @@
 import os
 import shutil
 import numpy as np
+import tensorflow as tf
 from model import UTransformer
 from hparams import Hparams
+from loss import Loss
 import zipfile
 
 hparams = Hparams()
@@ -37,6 +39,13 @@ def test(in_path='./tcdata/enso_round1_test_20210201/',
 
     test_sample_file = [os.path.join(in_path, i) for i in os.listdir(in_path) if i.endswith('.npy')]
     model = UTransformer(hp)
+    optimizer = tf.keras.optimizers.Adam(learning_rate=hp.lr)
+    model_loss = Loss(model)
+    model.compile(optimizer, model_loss)
+    x = np.random.random((4, 12, 24, 72, 4))
+    ys = (np.random.random((4, 12, 24, 72, 4)), np.random.random((4, 12, 24, 72, 4)))
+    model.train_on_batch([x, ys])
+    # model = tf.keras.models.load_model(f'{hp.delivery_model_dir}/{hp.delivery_model_file}')
     model.load_weights(f'{hp.delivery_model_dir}/{hp.delivery_model_file}')
 
     for i in test_sample_file:
@@ -58,4 +67,7 @@ def make_zip(source_dir, output_filename):
             f.write(os.path.join(dirpath, filename))
     f.close()
 
+
+if __name__ == '__main__':
+    test()
 
