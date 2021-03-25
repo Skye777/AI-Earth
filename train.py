@@ -21,7 +21,6 @@ from metric import score, nino_seq
 from hparams import Hparams
 
 hparams = Hparams()
-hparams = Hparams()
 parser = hparams.parser
 hp = parser.parse_args()
 
