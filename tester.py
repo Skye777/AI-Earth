@@ -6,6 +6,7 @@
 """
 import os
 import shutil
+from input import *
 import numpy as np
 import tensorflow as tf
 from model import UTransformer
@@ -20,10 +21,8 @@ hp = parser.parse_args()
 
 def nino_seq(ssta):
     # inputs: [24, h, w]
-    nino = []
     n_index = [np.mean(ssta[i, 10:13, 38:49]) for i in range(len(ssta))]
-    nino.append(n_index)
-    return nino
+    return n_index
 
 
 def test(in_path='./tcdata/enso_round1_test_20210201/',
@@ -42,18 +41,19 @@ def test(in_path='./tcdata/enso_round1_test_20210201/',
     optimizer = tf.keras.optimizers.Adam(learning_rate=hp.lr)
     model_loss = Loss(model)
     model.compile(optimizer, model_loss)
-    x = np.random.random((4, 12, 24, 72, 4))
-    ys = (np.random.random((4, 12, 24, 72, 4)), np.random.random((4, 12, 24, 72, 4)))
-    model.train_on_batch([x, ys])
+    # x = np.random.random((4, 12, 24, 72, 4))
+    # ys = (np.random.random((4, 24, 24, 72, 4)), np.random.random((4, 24, 24, 72, 4)))
+    # model.train_on_batch([x, ys])
     # model = tf.keras.models.load_model(f'{hp.delivery_model_dir}/{hp.delivery_model_file}')
     model.load_weights(f'{hp.delivery_model_dir}/{hp.delivery_model_file}')
 
     for i in test_sample_file:
         data = np.load(i)
         data = np.nan_to_num(data)
+        data = tf.expand_dims(data, 0)
 
-        preds = model(data, data, training=False)
-        nino_index = nino_seq(preds[:, :, :, 0])
+        preds = model([data, data], training=False)
+        nino_index = nino_seq(preds[0, :, :, :, 0])
 
         save_path = os.path.join(out_path, os.path.basename(i))
         np.save(file=save_path, arr=nino_index)

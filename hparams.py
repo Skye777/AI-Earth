@@ -5,9 +5,9 @@ class Hparams:
     parser = argparse.ArgumentParser()
     # test
     parser.add_argument('--path_list', default=['./tcdata/enso_round1_test_20210201/',
-                                                r'D:\python\AI-Earth\test样例_20210207_update\test样例'])
-    parser.add_argument('--delivery_model_dir', default='delivery')
-    parser.add_argument('--delivery_model_file', default='ckp_18.h5')
+                                                '/home/dl/Public/Skye/AI-Earth/test样例_20210207_update/test样例'])
+    parser.add_argument('--delivery_model_dir', default='ckpt/checkpoints')
+    parser.add_argument('--delivery_model_file', default='ckp_1')
 
     # prepro
     parser.add_argument('--npz_dir', default='/home/dl/Public/Skye/AI-Earth/final_data')
@@ -27,14 +27,15 @@ class Hparams:
     # training scheme
     parser.add_argument('--train_eval_split', default=0.2)
     parser.add_argument('--random_seed', default=2021)
-    parser.add_argument('--batch_size', default=4, type=int)
+    parser.add_argument('--batch_size', default=8, type=int)
     parser.add_argument('--eval_batch_size', default=128, type=int)
-    parser.add_argument('--num_epochs', default=20, type=int)
+    parser.add_argument('--num_epochs', default=100, type=int)
     parser.add_argument('--early_stop_patience', default=20)
     parser.add_argument('--num_epoch_record', default=1, help="Number of step to record checkpoint.")
 
     parser.add_argument('--ckpt', default='', help="checkpoint file path")
     parser.add_argument('--multi_gpu_model_dir', default="ckpt/checkpoints")
+    parser.add_argument('--single_gpu_model_dir', default="ckpt/checkpoints")
     parser.add_argument('--lr', default=0.0003, type=float, help="learning rate")
     parser.add_argument('--warmup_steps', default=4000, type=int)
     parser.add_argument('--logdir', default="logs", help="log directory")
